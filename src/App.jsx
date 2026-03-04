@@ -22,6 +22,11 @@ const MOCK_APPLICATIONS = [
   { id: 3, number: '1236', applicant: 'ИП Петров', address: 'г. Шымкент', status: 'completed', date: '11.02.2026' },
   { id: 4, number: '1237', applicant: 'АО Казахтелеком', address: 'г. Алматы', status: 'cancelled', date: '11.02.2026' },
   { id: 5, number: '1238', applicant: 'ИП Сидорова', address: 'г. Астана', status: 'in_progress', date: '10.02.2026' },
+  { id: 6, number: '1239', applicant: 'Иванов Иван', address: 'г. Алматы', status: 'new', date: '09.02.2026' },
+  { id: 7, number: '1240', applicant: 'Петрова Анна', address: 'г. Астана', status: 'in_progress', date: '09.02.2026' },
+  { id: 8, number: '1241', applicant: 'Смагулов Нурлан', address: 'г. Шымкент', status: 'completed', date: '08.02.2026' },
+  { id: 9, number: '1242', applicant: 'Дуйсенова Айгерим', address: 'г. Алматы', status: 'in_progress', date: '08.02.2026' },
+  { id: 10, number: '1243', applicant: 'Ким Алексей', address: 'г. Астана', status: 'new', date: '07.02.2026' },
 ]
 
 const MOCK_DOCUMENTS = [
