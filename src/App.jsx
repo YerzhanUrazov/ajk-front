@@ -903,7 +903,7 @@ function RecommendationsPage() {
             <div className="master-revision-banner">
               <div className="master-revision-banner-content">
                 <div>
-                  <strong>Мастер вернул рекомендацию на доработку.</strong>
+                  <strong>Мастер утвердил рекомендацию.</strong>
                   {masterRevision.comment && (
                     <p className="master-revision-banner-comment">Коментарий Мастера: {masterRevision.comment}</p>
                   )}
@@ -1252,7 +1252,7 @@ function MasterReviewPage() {
                         navigate(backUrl)
                       }}
                     >
-                      Отправить на доработку
+                      Утвердить
                     </button>
                   </div>
                 </section>
@@ -1266,18 +1266,6 @@ function MasterReviewPage() {
                   <div className="master-review-buttons">
                     <button type="button" className="btn-secondary" onClick={() => setShowEditBlock(true)}>
                       Редактировать
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-primary btn-primary--large"
-                      onClick={() => {
-                        try {
-                          sessionStorage.removeItem(`recommendation_${id}`)
-                        } catch (_) {}
-                        navigate(backUrl)
-                      }}
-                    >
-                      Утвердить
                     </button>
                   </div>
                 )}
