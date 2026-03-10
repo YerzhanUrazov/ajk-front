@@ -913,6 +913,11 @@ function RecommendationsPage() {
     }
   })()
 
+  const isApproved = Boolean(masterRevision)
+  const viewDoc = isApproved
+    ? { ...doc, ...(masterRevision?.doc || {}) }
+    : doc
+
   const updateDoc = (key, value) => setDoc((prev) => ({ ...prev, [key]: value }))
 
   const handleSendForApproval = () => {
@@ -981,7 +986,7 @@ function RecommendationsPage() {
             </div>
           ) : (
             <>
-              <div className="tech-recommendation-doc">
+              <div className={`tech-recommendation-doc ${isApproved ? 'tech-recommendation-doc--readonly' : ''}`}>
                 <div className="tech-recommendation-header">
                   <div className="tech-recommendation-logo">АЖК АЛАТАУ ЖАРЫҚ КОМПАНИЯСЫ</div>
                   <div className="tech-recommendation-title-block">
@@ -1008,12 +1013,36 @@ function RecommendationsPage() {
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.consumer} onChange={(e) => updateDoc('consumer', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.purpose} onChange={(e) => updateDoc('purpose', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.address} onChange={(e) => updateDoc('address', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.requestedPower} onChange={(e) => updateDoc('requestedPower', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.category} onChange={(e) => updateDoc('category', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.existingPower} onChange={(e) => updateDoc('existingPower', e.target.value)} placeholder="—" /></td>
+                        <td>
+                          {isApproved ? (viewDoc.consumer || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.consumer} onChange={(e) => updateDoc('consumer', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.purpose || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.purpose} onChange={(e) => updateDoc('purpose', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.address || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.address} onChange={(e) => updateDoc('address', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.requestedPower || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.requestedPower} onChange={(e) => updateDoc('requestedPower', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.category || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.category} onChange={(e) => updateDoc('category', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.existingPower || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.existingPower} onChange={(e) => updateDoc('existingPower', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1045,44 +1074,99 @@ function RecommendationsPage() {
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.connectionPoint} onChange={(e) => updateDoc('connectionPoint', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.tpType} onChange={(e) => updateDoc('tpType', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.tr1Imax} onChange={(e) => updateDoc('tr1Imax', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.tr1S} onChange={(e) => updateDoc('tr1S', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.tr2Imax} onChange={(e) => updateDoc('tr2Imax', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.tr2S} onChange={(e) => updateDoc('tr2S', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.yearCommissioning} onChange={(e) => updateDoc('yearCommissioning', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.loadImax} onChange={(e) => updateDoc('loadImax', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.ps} onChange={(e) => updateDoc('ps', e.target.value)} placeholder="—" /></td>
-                        <td><input type="text" className="tech-recommendation-input" value={doc.feeder} onChange={(e) => updateDoc('feeder', e.target.value)} placeholder="—" /></td>
+                        <td>
+                          {isApproved ? (viewDoc.connectionPoint || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.connectionPoint} onChange={(e) => updateDoc('connectionPoint', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.tpType || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.tpType} onChange={(e) => updateDoc('tpType', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.tr1Imax || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.tr1Imax} onChange={(e) => updateDoc('tr1Imax', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.tr1S || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.tr1S} onChange={(e) => updateDoc('tr1S', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.tr2Imax || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.tr2Imax} onChange={(e) => updateDoc('tr2Imax', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.tr2S || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.tr2S} onChange={(e) => updateDoc('tr2S', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.yearCommissioning || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.yearCommissioning} onChange={(e) => updateDoc('yearCommissioning', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.loadImax || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.loadImax} onChange={(e) => updateDoc('loadImax', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.ps || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.ps} onChange={(e) => updateDoc('ps', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
+                        <td>
+                          {isApproved ? (viewDoc.feeder || '—') : (
+                            <input type="text" className="tech-recommendation-input" value={viewDoc.feeder} onChange={(e) => updateDoc('feeder', e.target.value)} placeholder="—" />
+                          )}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <h4 className="tech-recommendation-sub">Условия для подключения, требования по усилению сетей.</h4>
-                <textarea
-                  className="tech-recommendation-conditions-input"
-                  value={doc.conditions}
-                  onChange={(e) => updateDoc('conditions', e.target.value)}
-                  placeholder="Введите условия..."
-                  rows={5}
-                />
-                <div className="tech-recommendation-comment-row">
-                  <label className="tech-recommendation-comment-label">Коментарий инженера</label>
-                  <input
-                    type="text"
-                    className="tech-recommendation-input tech-recommendation-comment-input"
-                    value={doc.engineerComment}
-                    onChange={(e) => updateDoc('engineerComment', e.target.value)}
-                    placeholder="Мнение / рекомендация инженера..."
-                  />
-                </div>
-                <div className="tech-recommendation-footer-row">
-                  <div className="tech-recommendation-footer">Мастер РЭС-7</div>
-                  <button type="button" className="btn-primary btn-primary--large" onClick={handleSendForApproval}>
-                    Отправить на согласование
-                  </button>
-                </div>
+                {isApproved ? (
+                  <>
+                    <div className="master-review-conditions-readonly">{viewDoc.conditions || '—'}</div>
+                    <div className="tech-recommendation-comment-row">
+                      <label className="tech-recommendation-comment-label">Коментарий инженера</label>
+                      <div className="master-review-conditions-readonly">{viewDoc.engineerComment || '—'}</div>
+                    </div>
+                    <div className="tech-recommendation-footer-row">
+                      <div className="tech-recommendation-footer">Мастер РЭС-7</div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <textarea
+                      className="tech-recommendation-conditions-input"
+                      value={viewDoc.conditions}
+                      onChange={(e) => updateDoc('conditions', e.target.value)}
+                      placeholder="Введите условия..."
+                      rows={5}
+                    />
+                    <div className="tech-recommendation-comment-row">
+                      <label className="tech-recommendation-comment-label">Коментарий инженера</label>
+                      <input
+                        type="text"
+                        className="tech-recommendation-input tech-recommendation-comment-input"
+                        value={viewDoc.engineerComment}
+                        onChange={(e) => updateDoc('engineerComment', e.target.value)}
+                        placeholder="Мнение / рекомендация инженера..."
+                      />
+                    </div>
+                    <div className="tech-recommendation-footer-row">
+                      <div className="tech-recommendation-footer">Мастер РЭС-7</div>
+                      <button type="button" className="btn-primary btn-primary--large" onClick={handleSendForApproval}>
+                        Отправить на согласование
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </>
           )}
