@@ -303,6 +303,16 @@ function OperatorList() {
               <tbody>
                 {MOCK_APPLICATIONS.map((row) => {
                   const status = STATUS_CONFIG[row.status]
+                  const masterRev = (() => {
+                    if (!isEngineer) return null
+                    try {
+                      const raw = sessionStorage.getItem(`master_revision_${row.number}`)
+                      return raw ? JSON.parse(raw) : null
+                    } catch (_) {
+                      return null
+                    }
+                  })()
+                  const approvedTp = masterRev?.tp || null
                   return (
                     <tr key={row.id}>
                       <td className="col-number">#{row.number}</td>
@@ -310,13 +320,36 @@ function OperatorList() {
                       <td className="col-address">{row.address}</td>
                       <td className="col-status">
                         <span className={`badge ${status.className}`}>{status.label}</span>
+                        {isEngineer && approvedTp && (
+                          <Link
+                            to={`/engineer/request/${row.number}/recommendations?tp=${approvedTp}`}
+                            className="badge badge-approved"
+                            title="Открыть утвержденную рекомендацию"
+                          >
+                            Утверждено
+                          </Link>
+                        )}
                       </td>
                       <td className="col-date">{row.date}</td>
                       <td className="col-actions">
-                        <Link to={isEngineer ? `/engineer/request/${row.number}` : `/request/${row.number}`} className="btn-primary">
-                          {isEngineer ? 'Взять в работу' : 'Открыть'}
-                          <CaretRightIcon />
-                        </Link>
+                        {isEngineer ? (
+                          approvedTp ? (
+                            <Link to={`/engineer/request/${row.number}/recommendations?tp=${approvedTp}`} className="btn-primary">
+                              Открыть рекомендацию
+                              <CaretRightIcon />
+                            </Link>
+                          ) : (
+                            <Link to={`/engineer/request/${row.number}`} className="btn-primary">
+                              Взять в работу
+                              <CaretRightIcon />
+                            </Link>
+                          )
+                        ) : (
+                          <Link to={`/request/${row.number}`} className="btn-primary">
+                            Открыть
+                            <CaretRightIcon />
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   )
@@ -886,8 +919,18 @@ function RecommendationsPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const selectedTp = searchParams.get('tp')
+  const selectedTpFromUrl = searchParams.get('tp')
   const allRows = getRecommendationsRows()
+  const masterRevision = (() => {
+    try {
+      const raw = sessionStorage.getItem(`master_revision_${id}`)
+      return raw ? JSON.parse(raw) : null
+    } catch (_) {
+      return null
+    }
+  })()
+
+  const selectedTp = selectedTpFromUrl || masterRevision?.tp || null
   const rows = selectedTp ? allRows.filter((r) => r.tpNumber === selectedTp) : []
   const chosenRow = rows.length > 0 ? rows[0] : null
   const request = MOCK_APPLICATIONS.find((r) => r.number === id)
@@ -903,15 +946,6 @@ function RecommendationsPage() {
     } catch (_) {}
     return base
   })
-
-  const masterRevision = (() => {
-    try {
-      const raw = sessionStorage.getItem(`master_revision_${id}`)
-      return raw ? JSON.parse(raw) : null
-    } catch (_) {
-      return null
-    }
-  })()
 
   const isApproved = Boolean(masterRevision)
   const viewDoc = isApproved
@@ -1310,7 +1344,10 @@ function MasterReviewPage() {
 
   const handleApprove = () => {
     try {
-      sessionStorage.setItem(`master_revision_${id}`, JSON.stringify({ comment: masterComment, doc: masterDoc }))
+      sessionStorage.setItem(
+        `master_revision_${id}`,
+        JSON.stringify({ tp: selectedTp, comment: masterComment, doc: masterDoc })
+      )
       sessionStorage.removeItem(`recommendation_${id}`)
     } catch (_) {}
     navigate(backUrl)

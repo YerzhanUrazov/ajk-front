@@ -379,6 +379,17 @@
   color: #fff;
 }
 
+.badge.badge-approved {
+  margin-left: 8px;
+  text-decoration: none;
+  background: #f59e0b;
+  color: #111827;
+}
+
+.badge.badge-approved:hover {
+  filter: brightness(0.98);
+}
+
 /* ——— Link as primary button ——— */
 a.btn-primary {
   text-decoration: none;
