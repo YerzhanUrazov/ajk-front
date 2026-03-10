@@ -1241,12 +1241,75 @@ a.btn-icon {
   color: var(--text);
 }
 
+.tech-recommendation-input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  color: var(--text);
+  background: var(--bg-main);
+  box-sizing: border-box;
+}
+
+.tech-recommendation-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .tech-recommendation-conditions {
   min-height: 120px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: #fafafa;
   margin-bottom: 24px;
+}
+
+.tech-recommendation-conditions-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg-main);
+  resize: vertical;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.tech-recommendation-conditions-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.tech-recommendation-comment-row {
+  margin-bottom: 20px;
+}
+
+.tech-recommendation-comment-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.tech-recommendation-comment-input {
+  max-width: 480px;
+}
+
+.tech-recommendation-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
 }
 
 .tech-recommendation-footer {
