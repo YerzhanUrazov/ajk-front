@@ -858,9 +858,12 @@ function RecommendationsPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [comment, setComment] = useState('')
+  const [showEditForm, setShowEditForm] = useState(false)
   const selectedTp = searchParams.get('tp')
   const allRows = getRecommendationsRows()
   const rows = selectedTp ? allRows.filter((r) => r.tpNumber === selectedTp) : []
+  const chosenRow = rows.length > 0 ? rows[0] : null
+  const request = MOCK_APPLICATIONS.find((r) => r.number === id)
   const backUrl = `/engineer/request/${id}`
   const masterRevision = (() => {
     try {
@@ -916,77 +919,169 @@ function RecommendationsPage() {
             </div>
           )}
 
-          <div className="recommendations-card">
-            <div className="recommendations-toolbar">
-              <span className="recommendations-toolbar-title">Данные по рекомендуемым ТП</span>
-              <button type="button" className="btn-outline">
-                Редактировать
+          {rows.length === 0 ? (
+            <div className="recommendations-empty-block">
+              <p className="recommendations-empty">Данные не выбраны. Вернитесь и выберите одну ТП в таблице «Результат ИИ».</p>
+              <button type="button" className="btn-outline" onClick={() => navigate(backUrl)}>
+                Вернуться к заявке
               </button>
             </div>
-            <div className="recommendations-table-wrap">
-              {rows.length === 0 ? (
-                <p className="recommendations-empty">Данные не выбраны. Вернитесь и выберите одну ТП в таблице «Результат ИИ».</p>
-              ) : (
-                <table className="recommendations-table">
-                  <thead>
-                    <tr>
-                      <th>Номер ТП</th>
-                      <th>Мощность</th>
-                      <th>Номер ПС</th>
-                      <th>Класс напряжения</th>
-                      <th>IA</th>
-                      <th>IB</th>
-                      <th>IC</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row) => (
-                      <tr key={row.id}>
-                        <td>{row.tpNumber}</td>
-                        <td>{row.power}</td>
-                        <td>{row.psNumber}</td>
-                        <td>{row.voltageClass}</td>
-                        <td>{row.ia}</td>
-                        <td>{row.ib}</td>
-                        <td>{row.ic}</td>
+          ) : (
+            <>
+              <div className="tech-recommendation-doc">
+                <div className="tech-recommendation-header">
+                  <div className="tech-recommendation-logo">АЖК АЛАТАУ ЖАРЫҚ КОМПАНИЯСЫ</div>
+                  <div className="tech-recommendation-title-block">
+                    <div>7-ші электр тораптар ауданы</div>
+                    <div>Районные электрические сети №7</div>
+                    <h2>Техническая рекомендация</h2>
+                    <div className="tech-recommendation-page">стр. 1 из 1</div>
+                  </div>
+                </div>
+                <p className="tech-recommendation-intro">
+                  Рекомендации разработаны ПТГ РЭС - 7 на основе технической документации, для подготовки технических условий
+                </p>
+                <div className="tech-recommendation-actions-top">
+                  <button type="button" className="btn-outline" onClick={() => setShowEditForm(!showEditForm)}>
+                    {showEditForm ? 'Скрыть форму' : 'Редактировать'}
+                  </button>
+                </div>
+                <div className="tech-recommendation-table-wrap">
+                  <table className="tech-recommendation-table">
+                    <thead>
+                      <tr>
+                        <th>Потребитель</th>
+                        <th>Целевое назначение объекта</th>
+                        <th>Место расположения (адрес)</th>
+                        <th>Запрашиваемая мощность</th>
+                        <th>Категория эл.снабжения</th>
+                        <th>Существующая мощность и точка подключения</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{request?.applicant ?? '—'}</td>
+                        <td>{request?.purpose ?? '—'}</td>
+                        <td>{request?.address ?? '—'}</td>
+                        <td>{chosenRow?.power ?? '—'}</td>
+                        <td>—</td>
+                        <td>—</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <h4 className="tech-recommendation-sub">Точка подключения от РУ-0,4кВ ТП (тип), КЯ, ЛЭП-0,4кВ</h4>
+                <div className="tech-recommendation-table-wrap">
+                  <table className="tech-recommendation-table tech-recommendation-table-second">
+                    <thead>
+                      <tr>
+                        <th>Точка подключения</th>
+                        <th>Тип ТП</th>
+                        <th colSpan={2}>Характеристика тр-ра Тр. №1</th>
+                        <th colSpan={2}>Характеристика тр-ра Тр. №2</th>
+                        <th colSpan={2}>Хар-ка ЛЭП</th>
+                        <th colSpan={2}>Норм. схема</th>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Imax (A)</th>
+                        <th>S (kVA)</th>
+                        <th>Imax (A)</th>
+                        <th>S (kVA)</th>
+                        <th>Год ввода</th>
+                        <th>Нагр. Imax (A)</th>
+                        <th>ПС</th>
+                        <th>Фид</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{chosenRow?.tpNumber ?? '—'}</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>{chosenRow?.psNumber ?? '—'}</td>
+                        <td>—</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <h4 className="tech-recommendation-sub">Условия для подключения, требования по усилению сетей.</h4>
+                <div className="tech-recommendation-conditions" />
+                <div className="tech-recommendation-footer">Мастер РЭС-7</div>
+              </div>
+              {showEditForm && (
+                <div className="recommendations-card">
+                  <div className="recommendations-toolbar">
+                    <span className="recommendations-toolbar-title">Данные по рекомендуемым ТП</span>
+                  </div>
+                  <div className="recommendations-table-wrap">
+                    <table className="recommendations-table">
+                      <thead>
+                        <tr>
+                          <th>Номер ТП</th>
+                          <th>Мощность</th>
+                          <th>Номер ПС</th>
+                          <th>Класс напряжения</th>
+                          <th>IA</th>
+                          <th>IB</th>
+                          <th>IC</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.map((row) => (
+                          <tr key={row.id}>
+                            <td>{row.tpNumber}</td>
+                            <td>{row.power}</td>
+                            <td>{row.psNumber}</td>
+                            <td>{row.voltageClass}</td>
+                            <td>{row.ia}</td>
+                            <td>{row.ib}</td>
+                            <td>{row.ic}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="recommendations-comment">
+                    <label htmlFor="recommendations-comment-input" className="recommendations-comment-label">
+                      Коментарий
+                    </label>
+                    <textarea
+                      id="recommendations-comment-input"
+                      className="recommendations-comment-input"
+                      placeholder="Мнение / рекомендация инженера..."
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      rows={4}
+                    />
+                  </div>
+                  <div className="recommendations-footer">
+                    <button
+                      type="button"
+                      className="btn-primary btn-primary--large"
+                      onClick={() => {
+                        if (selectedTp && rows.length > 0) {
+                          try {
+                            sessionStorage.setItem(`recommendation_${id}`, JSON.stringify({ tp: selectedTp, comment }))
+                            sessionStorage.removeItem(`master_revision_${id}`)
+                          } catch (_) {}
+                          navigate(backUrl)
+                        }
+                      }}
+                    >
+                      Отправить
+                    </button>
+                  </div>
+                </div>
               )}
-            </div>
-            <div className="recommendations-comment">
-              <label htmlFor="recommendations-comment-input" className="recommendations-comment-label">
-                Коментарий
-              </label>
-              <textarea
-                id="recommendations-comment-input"
-                className="recommendations-comment-input"
-                placeholder="Мнение / рекомендация инженера..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                rows={4}
-              />
-            </div>
-            <div className="recommendations-footer">
-              <button
-                type="button"
-                className="btn-primary btn-primary--large"
-                onClick={() => {
-                  if (selectedTp && rows.length > 0) {
-                    try {
-                      sessionStorage.setItem(`recommendation_${id}`, JSON.stringify({ tp: selectedTp, comment }))
-                      sessionStorage.removeItem(`master_revision_${id}`)
-                    } catch (_) {}
-                    navigate(backUrl)
-                  }
-                }}
-                disabled={rows.length === 0}
-              >
-                Отправить
-              </button>
-            </div>
-          </div>
+            </>
+          )}
         </main>
       </div>
     </div>

@@ -1137,7 +1137,122 @@ a.btn-icon {
 
 /* ——— Страница «Рекомендации» ——— */
 .recommendations-page {
-  max-width: 900px;
+  max-width: 960px;
+}
+
+.recommendations-empty-block {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Документ «Техническая рекомендация» */
+.tech-recommendation-doc {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px 28px 32px;
+  margin-bottom: 24px;
+}
+
+.tech-recommendation-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tech-recommendation-logo {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tech-recommendation-title-block {
+  text-align: right;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.tech-recommendation-title-block h2 {
+  margin: 4px 0 2px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tech-recommendation-page {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tech-recommendation-intro {
+  margin: 0 0 20px;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.tech-recommendation-actions-top {
+  margin-bottom: 20px;
+}
+
+.tech-recommendation-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.tech-recommendation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.tech-recommendation-table th,
+.tech-recommendation-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tech-recommendation-table thead th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tech-recommendation-table-second thead tr:first-child th {
+  font-size: 0.75rem;
+}
+
+.tech-recommendation-sub {
+  margin: 0 0 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tech-recommendation-conditions {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fafafa;
+  margin-bottom: 24px;
+}
+
+.tech-recommendation-footer {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .recommendations-card {
