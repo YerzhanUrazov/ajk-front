@@ -1547,6 +1547,26 @@ a.btn-icon {
   color: var(--text);
 }
 
+.master-review-conditions-readonly {
+  min-height: 60px;
+  padding: 12px 14px;
+  background: #fafafa;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--text);
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}
+
+.tech-recommendation-doc--readonly {
+  padding: 16px 20px;
+}
+
+.tech-recommendation-doc--readonly .tech-recommendation-table-wrap {
+  margin-bottom: 16px;
+}
+
 .master-review-comment {
   padding: 14px 18px;
   background: #f8f8f8;

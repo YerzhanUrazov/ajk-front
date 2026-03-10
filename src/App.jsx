@@ -852,6 +852,12 @@ function TpDetailPage() {
   )
 }
 
+const DOC_KEYS = [
+  'consumer', 'purpose', 'address', 'requestedPower', 'category', 'existingPower',
+  'connectionPoint', 'tpType', 'tr1Imax', 'tr1S', 'tr2Imax', 'tr2S', 'yearCommissioning', 'loadImax', 'ps', 'feeder',
+  'conditions', 'engineerComment',
+]
+
 const initialDocFromRequest = (request, chosenRow) => ({
   consumer: request?.applicant ?? '',
   purpose: request?.purpose ?? '',
@@ -872,6 +878,8 @@ const initialDocFromRequest = (request, chosenRow) => ({
   conditions: '',
   engineerComment: '',
 })
+
+const getEmptyDoc = () => Object.fromEntries(DOC_KEYS.map((k) => [k, '']))
 
 function RecommendationsPage() {
   const { id } = useParams()
@@ -1191,6 +1199,7 @@ function MasterReviewPage() {
   const location = useLocation()
   const [showEditBlock, setShowEditBlock] = useState(false)
   const [masterComment, setMasterComment] = useState('')
+  const [masterDoc, setMasterDoc] = useState(() => getEmptyDoc())
 
   const recommendationData = (() => {
     try {
@@ -1203,9 +1212,25 @@ function MasterReviewPage() {
 
   const selectedTp = recommendationData?.tp || null
   const comment = recommendationData?.comment || ''
+  const savedDoc = recommendationData?.doc || null
   const allRows = getRecommendationsRows()
   const chosenRow = selectedTp ? allRows.find((r) => r.tpNumber === selectedTp) : null
   const backUrl = '/master'
+
+  const openEditBlock = () => {
+    setMasterDoc(savedDoc ? { ...getEmptyDoc(), ...savedDoc } : getEmptyDoc())
+    setShowEditBlock(true)
+  }
+
+  const updateMasterDoc = (key, value) => setMasterDoc((prev) => ({ ...prev, [key]: value }))
+
+  const handleApprove = () => {
+    try {
+      sessionStorage.setItem(`master_revision_${id}`, JSON.stringify({ comment: masterComment, doc: masterDoc }))
+      sessionStorage.removeItem(`recommendation_${id}`)
+    } catch (_) {}
+    navigate(backUrl)
+  }
 
   return (
     <div className="app">
@@ -1313,13 +1338,164 @@ function MasterReviewPage() {
                 </div>
               </section>
 
+              {savedDoc && (
+                <section className="master-review-section">
+                  <h3 className="master-review-section-title">Техническая рекомендация (от инженера)</h3>
+                  <div className="tech-recommendation-doc tech-recommendation-doc--readonly">
+                    <div className="tech-recommendation-table-wrap">
+                      <table className="tech-recommendation-table">
+                        <thead>
+                          <tr>
+                            <th>Потребитель</th>
+                            <th>Целевое назначение объекта</th>
+                            <th>Место расположения (адрес)</th>
+                            <th>Запрашиваемая мощность</th>
+                            <th>Категория эл.снабжения</th>
+                            <th>Существующая мощность и точка подключения</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{savedDoc.consumer || '—'}</td>
+                            <td>{savedDoc.purpose || '—'}</td>
+                            <td>{savedDoc.address || '—'}</td>
+                            <td>{savedDoc.requestedPower || '—'}</td>
+                            <td>{savedDoc.category || '—'}</td>
+                            <td>{savedDoc.existingPower || '—'}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <h4 className="tech-recommendation-sub">Точка подключения от РУ-0,4кВ ТП (тип), КЯ, ЛЭП-0,4кВ</h4>
+                    <div className="tech-recommendation-table-wrap">
+                      <table className="tech-recommendation-table tech-recommendation-table-second">
+                        <thead>
+                          <tr>
+                            <th>Точка подключения</th>
+                            <th>Тип ТП</th>
+                            <th colSpan={2}>Характеристика тр-ра Тр. №1</th>
+                            <th colSpan={2}>Характеристика тр-ра Тр. №2</th>
+                            <th colSpan={2}>Хар-ка ЛЭП</th>
+                            <th colSpan={2}>Норм. схема</th>
+                          </tr>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Imax (A)</th>
+                            <th>S (kVA)</th>
+                            <th>Imax (A)</th>
+                            <th>S (kVA)</th>
+                            <th>Год ввода</th>
+                            <th>Нагр. Imax (A)</th>
+                            <th>ПС</th>
+                            <th>Фид</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{savedDoc.connectionPoint || '—'}</td>
+                            <td>{savedDoc.tpType || '—'}</td>
+                            <td>{savedDoc.tr1Imax || '—'}</td>
+                            <td>{savedDoc.tr1S || '—'}</td>
+                            <td>{savedDoc.tr2Imax || '—'}</td>
+                            <td>{savedDoc.tr2S || '—'}</td>
+                            <td>{savedDoc.yearCommissioning || '—'}</td>
+                            <td>{savedDoc.loadImax || '—'}</td>
+                            <td>{savedDoc.ps || '—'}</td>
+                            <td>{savedDoc.feeder || '—'}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <h4 className="tech-recommendation-sub">Условия для подключения, требования по усилению сетей.</h4>
+                    <div className="master-review-conditions-readonly">{savedDoc.conditions || '—'}</div>
+                  </div>
+                </section>
+              )}
+
               <section className="master-review-section">
                 <h3 className="master-review-section-title">Коментарий инженера</h3>
-                <div className="master-review-comment">{comment || '—'}</div>
+                <div className="master-review-comment">{comment || (savedDoc?.engineerComment) || '—'}</div>
               </section>
 
               {showEditBlock && (
                 <section className="master-review-section master-review-edit-block">
+                  <h3 className="master-review-section-title">Редактирование рекомендации и утверждение</h3>
+                  <div className="tech-recommendation-doc tech-recommendation-doc--editable">
+                    <div className="tech-recommendation-table-wrap">
+                      <table className="tech-recommendation-table">
+                        <thead>
+                          <tr>
+                            <th>Потребитель</th>
+                            <th>Целевое назначение объекта</th>
+                            <th>Место расположения (адрес)</th>
+                            <th>Запрашиваемая мощность</th>
+                            <th>Категория эл.снабжения</th>
+                            <th>Существующая мощность и точка подключения</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.consumer ?? ''} onChange={(e) => updateMasterDoc('consumer', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.purpose ?? ''} onChange={(e) => updateMasterDoc('purpose', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.address ?? ''} onChange={(e) => updateMasterDoc('address', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.requestedPower ?? ''} onChange={(e) => updateMasterDoc('requestedPower', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.category ?? ''} onChange={(e) => updateMasterDoc('category', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.existingPower ?? ''} onChange={(e) => updateMasterDoc('existingPower', e.target.value)} placeholder="—" /></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <h4 className="tech-recommendation-sub">Точка подключения от РУ-0,4кВ ТП (тип), КЯ, ЛЭП-0,4кВ</h4>
+                    <div className="tech-recommendation-table-wrap">
+                      <table className="tech-recommendation-table tech-recommendation-table-second">
+                        <thead>
+                          <tr>
+                            <th>Точка подключения</th>
+                            <th>Тип ТП</th>
+                            <th colSpan={2}>Характеристика тр-ра Тр. №1</th>
+                            <th colSpan={2}>Характеристика тр-ра Тр. №2</th>
+                            <th colSpan={2}>Хар-ка ЛЭП</th>
+                            <th colSpan={2}>Норм. схема</th>
+                          </tr>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Imax (A)</th>
+                            <th>S (kVA)</th>
+                            <th>Imax (A)</th>
+                            <th>S (kVA)</th>
+                            <th>Год ввода</th>
+                            <th>Нагр. Imax (A)</th>
+                            <th>ПС</th>
+                            <th>Фид</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.connectionPoint ?? ''} onChange={(e) => updateMasterDoc('connectionPoint', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.tpType ?? ''} onChange={(e) => updateMasterDoc('tpType', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.tr1Imax ?? ''} onChange={(e) => updateMasterDoc('tr1Imax', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.tr1S ?? ''} onChange={(e) => updateMasterDoc('tr1S', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.tr2Imax ?? ''} onChange={(e) => updateMasterDoc('tr2Imax', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.tr2S ?? ''} onChange={(e) => updateMasterDoc('tr2S', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.yearCommissioning ?? ''} onChange={(e) => updateMasterDoc('yearCommissioning', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.loadImax ?? ''} onChange={(e) => updateMasterDoc('loadImax', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.ps ?? ''} onChange={(e) => updateMasterDoc('ps', e.target.value)} placeholder="—" /></td>
+                            <td><input type="text" className="tech-recommendation-input" value={masterDoc.feeder ?? ''} onChange={(e) => updateMasterDoc('feeder', e.target.value)} placeholder="—" /></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <h4 className="tech-recommendation-sub">Условия для подключения, требования по усилению сетей.</h4>
+                    <textarea
+                      className="tech-recommendation-conditions-input"
+                      value={masterDoc.conditions ?? ''}
+                      onChange={(e) => updateMasterDoc('conditions', e.target.value)}
+                      placeholder="Условия..."
+                      rows={4}
+                    />
+                  </div>
                   <h3 className="master-review-section-title">Коментарий Мастера</h3>
                   <textarea
                     className="recommendations-comment-input"
@@ -1332,17 +1508,7 @@ function MasterReviewPage() {
                     <button type="button" className="btn-outline" onClick={() => { setShowEditBlock(false); setMasterComment('') }}>
                       Отмена
                     </button>
-                    <button
-                      type="button"
-                      className="btn-primary btn-primary--large"
-                      onClick={() => {
-                        try {
-                          sessionStorage.setItem(`master_revision_${id}`, JSON.stringify({ comment: masterComment }))
-                          sessionStorage.removeItem(`recommendation_${id}`)
-                        } catch (_) {}
-                        navigate(backUrl)
-                      }}
-                    >
+                    <button type="button" className="btn-primary btn-primary--large" onClick={handleApprove}>
                       Утвердить
                     </button>
                   </div>
@@ -1355,7 +1521,7 @@ function MasterReviewPage() {
                 </Link>
                 {!showEditBlock && (
                   <div className="master-review-buttons">
-                    <button type="button" className="btn-secondary" onClick={() => setShowEditBlock(true)}>
+                    <button type="button" className="btn-secondary" onClick={openEditBlock}>
                       Редактировать
                     </button>
                   </div>
