@@ -319,8 +319,7 @@ function OperatorList() {
                       <td className="col-applicant">{row.applicant}</td>
                       <td className="col-address">{row.address}</td>
                       <td className="col-status">
-                        <span className={`badge ${status.className}`}>{status.label}</span>
-                        {isEngineer && approvedTp && (
+                        {isEngineer && approvedTp ? (
                           <Link
                             to={`/engineer/request/${row.number}/recommendations?tp=${approvedTp}`}
                             className="badge badge-approved"
@@ -328,6 +327,8 @@ function OperatorList() {
                           >
                             Утверждено
                           </Link>
+                        ) : (
+                          <span className={`badge ${status.className}`}>{status.label}</span>
                         )}
                       </td>
                       <td className="col-date">{row.date}</td>
